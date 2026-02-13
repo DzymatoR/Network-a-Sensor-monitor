@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: network-sensor-monitor
+
+    # IMPORTANT: host network mode required for WiFi monitoring and local network ping
+    network_mode: host
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Environment variables (can be overridden by .env file)
+    environment:
+      - TZ=${TZ:-Europe/Prague}
+      - PYTHONUNBUFFERED=1
+
+    # Volumes for persistence
+    volumes:
+      # Configuration file (create config.yml from config.example.yml)
+      - ./config.yml:/app/config.yml:ro
+
+      # Persistent data directory (SQLite database)
+      - ./data:/app/data
+
+      # Reports output directory
+      - ./reports:/app/reports
+
+      # Logs directory
+      - ./logs:/app/logs
+
+    # Capabilities needed for network operations
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    # Security options
+    # Note: privileged mode may be required on some systems for WiFi monitoring
+    # privileged: true
+
+    # Resource limits (adjust for your Raspberry Pi)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "test", "-f", "/app/data/monitor.db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# Optional: Create named volumes instead of bind mounts
+# volumes:
+#   monitor-data:
+#   monitor-reports:
+#   monitor-logs:

@@ -1,0 +1,75 @@
+# Network & Sensor Stability Monitor Configuration
+# Copy this file to config.yml and adjust values for your environment
+
+# WiFi monitoring settings
+wifi:
+  interface: wlan0                    # WiFi interface to monitor (use 'ip addr' to find yours)
+  check_interval: 10                  # Check WiFi status every X seconds
+  rssi_warning_threshold: -70         # Warning threshold in dBm
+  rssi_critical_threshold: -80        # Critical threshold in dBm
+
+# Gateway (router/access point) monitoring
+gateway:
+  ip: 192.168.1.1                     # Your router IP address
+  ping_interval: 5                    # Ping interval in seconds
+  timeout: 2                          # Ping timeout in seconds
+
+# Internet connectivity targets
+internet_targets:
+  - 8.8.8.8                           # Google DNS
+  - 1.1.1.1                           # Cloudflare DNS
+
+# IoT sensors/devices to monitor
+sensors:
+  - name: "Senzor teploty - Lis 1"
+    ip: 192.168.1.101
+    type: ping                        # ping / mqtt / http
+    interval: 30                      # Check every X seconds
+    timeout: 2
+
+  - name: "Senzor teploty - Lis 2"
+    ip: 192.168.1.102
+    type: ping
+    interval: 30
+    timeout: 2
+
+  - name: "MQTT Broker"
+    ip: 192.168.1.50
+    type: mqtt
+    port: 1883
+    interval: 60
+    timeout: 5
+    # Optional MQTT credentials
+    # username: mqtt_user
+    # password: mqtt_pass
+
+  # Example HTTP health check
+  # - name: "Web Server"
+  #   ip: 192.168.1.200
+  #   type: http
+  #   port: 80
+  #   path: /health
+  #   interval: 60
+  #   timeout: 5
+
+# Monitoring duration and reporting
+monitoring:
+  duration: 24h                       # Test duration: 1h, 24h, 7d, or "continuous"
+  report_interval: 1h                 # Generate report every X (1h, 30m, etc.)
+  data_retention_days: 7              # Keep data for X days
+
+# Database settings
+database:
+  path: /app/data/monitor.db          # SQLite database path (use volume in Docker)
+
+# Report output
+report:
+  output_dir: /app/reports            # Directory for HTML reports (use volume in Docker)
+  timezone: Europe/Prague             # Timezone for report timestamps
+
+# Logging
+logging:
+  level: INFO                         # DEBUG, INFO, WARNING, ERROR
+  file: /app/logs/monitor.log         # Log file path
+  max_bytes: 10485760                 # 10MB
+  backup_count: 5                     # Keep 5 backup files

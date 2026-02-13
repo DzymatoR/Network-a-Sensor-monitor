@@ -1,0 +1,23 @@
+# Core dependencies
+pyyaml>=6.0.1
+python-dateutil>=2.8.2
+
+# Database
+sqlalchemy>=2.0.23
+
+# Networking
+ping3>=4.0.4
+paho-mqtt>=1.6.1
+
+# CLI and UI
+rich>=13.7.0
+click>=8.1.7
+
+# Report generation
+jinja2>=3.1.2
+plotly>=5.18.0
+pandas>=2.1.4
+kaleido>=0.2.1
+
+# Utilities
+pytz>=2023.3
